@@ -4,43 +4,25 @@ using System.Text;
 
 namespace Homework5
 {
-    class Account
+    public class Atm
     {
-        public delegate void AccountStateHandler(string message);//обработчик учетной записи
-        AccountStateHandler _del;
-        int _sum;
-        public Account(int sum)
+        public event Action<decimal, string> BalanceHandler;
+        private decimal _balance = 0M;
+        public void GetMoney(decimal money)
         {
-            _sum = sum;
+            _balance -= money;
+            BalanceHandler?.Invoke(_balance, "get");
         }
-        public int CurrentSum => _sum;
-        public void Put(int sum)
+        public void PutMoney(decimal money)
         {
-            _sum += sum;
+            _balance += money;
+            BalanceHandler?.Invoke(_balance, "put");
         }
-        public void WithDraw(int sum)
+        public void ShowInfo()
         {
-            if (sum <= _sum)
-            {
-                _sum -= sum;
-                if (_del != null)
-                    _del($"Сумма {sum} снята со счета");
-            }
-            else
-            {
-                if (_del != null)
-                    _del("Недостаточно денег на счете");
-            }
+            //var eventName = "show";
+            BalanceHandler?.Invoke(_balance, "show");
         }
-        public void RegisterHandler(AccountStateHandler del)// регистрируем делегат. ЧТО ЭТО ЗНАЧИТ???
-        {
-            _del += del;// добавляем делегат
-        }
-        public void UnRegisterHandler(AccountStateHandler del)// отмена регистрации делегата???
-        {
-            _del -= del; // удаляем делегат
-        }
-
 
     }
 }

@@ -7,27 +7,27 @@ namespace Homework5
         delegate void Info();
         static void Main(string[] args)
         {
-            Account account1 = new Account(200);
-            Account.AccountStateHandler colorDelegate = (new Account.AccountStateHandler(Color_Message));
-            account1.RegisterHandler(new Account.AccountStateHandler(Show_Message));
-            account1.RegisterHandler(colorDelegate);
-            account1.WithDraw(100);
-            account1.WithDraw(150);
-            account1.UnregisterHandler(colorDelegate);
-            account1.Withdraw(50);
+            Atm atm = new Atm();
+            atm.BalanceHandler += GetInfo;
+            atm.BalanceHandler += ColorGetInfo;
+            atm.BalanceHandler += (decimal amount, string str) => Console.WriteLine($"Lambda test: {str}, {amount}");
+            atm.PutMoney(100);
+            atm.GetMoney(50);
+            atm.ShowInfo();
             Console.ReadLine();
+
+
         }
-        private static void Color_Message(string message)
+        public static void GetInfo(decimal amount, string operation)
         {
-            // Устанавливаем красный цвет символов
+            Console.WriteLine($"Operation: {operation}. Current balance: {amount}");
+        }
+        public static void ColorGetInfo(decimal amount, string operation)
+        {
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(message);
-            // Сбрасываем настройки цвета
+            Console.WriteLine($"Operation: {operation}. Current balance: {amount}");
             Console.ResetColor();
         }
-        private static void Show_Message(String message)
-        {
-            Console.WriteLine(message);
-        }
+
     }
 }
